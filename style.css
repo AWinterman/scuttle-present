@@ -1,0 +1,72 @@
+html {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  line-height: 1.5em;
+  font-family: sans-serif;
+  font-weight: 200;
+  font-size: 26px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: stretch;
+}
+
+header, section.level1 {
+  display: flex;
+  flex-flow: column;
+  min-height: 100%;
+  max-width: 35em;
+  overflow: hidden;
+  flex: 0 1 1;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+header > * {
+  flex: 0 1 1;
+}
+
+nav {
+  display: none;
+}
+
+blockquote {
+  color: gray
+}
+
+svg {
+  width: 40em;
+  flex: 80% 1 1;
+}
+
+svg .link {
+  stroke-width: 2px;
+  stroke: grey;
+  fill: none;
+}
+
+svg .node text.id {
+  visibility: hidden;
+  font-size: 1.5em;
+  font-weight: 100;
+  stroke: gray;
+  fill: white;
+  font-stretch: expanded;
+}
+
+svg .node:hover text.id {
+  visibility: visible;
+}
+
+
+svg .node:active {
+  stroke: black;
+  stroke-width: 1px;
+  fill: white;
+  transition: fill 0.1s stroke-width: 0.1s;
+}

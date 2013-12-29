@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" async src="bundle.js"></script>
+</head>
+<body>
+<section id="who-am-i" class="level1">
+<h1>Who am I?</h1>
+<ul>
+<li>Javascript engineer at UA.</li>
+<li><a href="https://twitter.com/andywinterman">@andywinterman</a> on twitter.</li>
+<li><code>winterMan</code> or sometimes <code>AWinterman</code> on IRC.</li>
+<li>I like chess and mathematics :)</li>
+</ul>
+</section>
+<section id="let-us-talk-about-time" class="level1">
+<h1>Let us talk about time:</h1>
+<ul>
+<li>Orders Events</li>
+<li>Measured with clocks:</li>
+</ul>
+<blockquote>
+<p>If an event happend at 3:15 the time on the clock was <em>after</em> 3:15, but <em>before</em> 3:16.</p>
+</blockquote>
+</section>
+<section id="what-is-a-clock" class="level1">
+<h1>What is a clock?</h1>
+<p>A device which counts:</p>
+<ul>
+<li>number of electrons emitted from radon</li>
+<li>drops of water</li>
+<li>number of times the sun has been at a certain position</li>
+<li>swings of a pendulum, etc.</li>
+</ul>
+<p>Why? So we have a consistent way to establish precedence:</p>
+</section>
+<section id="the-clock-condition" class="level1">
+<h1>The Clock Condition:</h1>
+<p><em>For all events <code>a</code>, <code>b</code>, <code>a</code> precedes <code>b</code> if <code>a</code> occurs at time earlier (a.k.a. lesser) than the time of <code>b</code></em></p>
+</section>
+<section id="how-do-we-establish-precedence-if-cant-both-see-the-same-clock" class="level1">
+<h1>How do we establish precedence if can’t both see the same clock?</h1>
+<ul>
+<li>We have a number of processes which communicated only by message passing</li>
+<li>We don’t how much time elapses between a message leaving the sender and being read by the receiver</li>
+<li>We can store data in each process</li>
+<li>We can’t trust peers to keep consistent time with all the other peers.</li>
+</ul>
+<p>What do we do?</p>
+</section>
+<section id="vector-clocks" class="level1">
+<h1>Vector Clocks</h1>
+<p><em>Stay Calm</em></p>
+<p>Like a normal clock, measures the number of occurences of some event, but!</p>
+<ul>
+<li>Events occur accross a distributed system.</li>
+<li>Time is unrelated to physical time.</li>
+<li>Each member of the system keeps its own clock</li>
+<li>Each member of the system keeps track of every other member’s time.</li>
+</ul>
+</section>
+<section id="example" class="level1">
+<h1>Example:</h1>
+<p>A network has two nodes: <code>P</code>, <code>Q</code>, so before any events have happened:</p>
+<pre><code>P: [0, 0]
+Q: [0, 0]</code></pre>
+<p>When <code>P</code> Recieves an event:</p>
+<pre><code>P: [1, 0]
+Q: [0, 0]</code></pre>
+</section>
+<section id="events" class="level1">
+<h1>Events?</h1>
+<ul>
+<li>local</li>
+<li>send</li>
+<li>receive</li>
+</ul>
+</section>
+<section id="implementation-rules" class="level1">
+<h1>Implementation Rules</h1>
+<p><strong>Rule 1:</strong> Any time a peer experiences an event, it increments its own entry in its clock.</p>
+<p><strong>Rule 2:</strong> Peers must include the value, <code>t</code> of their own entry in their clock when they send messages.</p>
+<p><strong>Rule 3:</strong> Upon receipt, peers update the sender’s entry in their clock to <code>t</code>. They update their own entry to be larger than <code>t</code>.</p>
+</section>
+<section id="example-1" class="level1">
+<h1>Example:</h1>
+<p>Recall:</p>
+<pre><code>P: [1, 0]
+Q: [0, 0]</code></pre>
+<blockquote>
+<p>P sends a message to Q.</p>
+</blockquote>
+<p>Upon sending:</p>
+<pre><code>P: [2, 0]
+Q: [0, 0]</code></pre>
+<p>Upon Receipt:</p>
+<pre><code>P: [2, 0]
+Q: [1, 2]</code></pre>
+</section>
+<section id="how-is-this-like-time" class="level1">
+<h1>How is this like time?</h1>
+<p>The <a href="#the-clock-condition">clock condition</a> still holds:</p>
+<p><strong>Caveat:</strong></p>
+<p>This is still only a partial ordering– if messages are seldom sent, many events will appear concurrent</p>
+</section>
+<section id="enter-scuttlebutt" class="level1">
+<h1>Enter Scuttlebutt</h1>
+<blockquote>
+<p>Did you hear what happened to Bob?</p>
+</blockquote>
+<p>Share history of state mutations accross a network.</p>
+</section>
+<section id="what-is-state" class="level1">
+<h1>What is state?</h1>
+<p>A key value store:</p>
+<pre><code>{
+  key1: {value: val1, version: vers1},
+  key2: {value: val2, version: vers2},
+  key3: {value: val3, version: vers3}
+}</code></pre>
+</section>
+<section id="what-is-history" class="level1">
+<h1>What is history?</h1>
+<p>A series of entries consisting of:</p>
+<ul>
+<li>The event itself</li>
+<li>ID of the peer at which the event the event occurred.</li>
+<li>the version number of the event.</li>
+</ul>
+</section>
+<section id="gossip-in-two-parts" class="level1">
+<h1>Gossip in two parts</h1>
+<section id="get-on-the-same-page" class="level3">
+<h3>Get on the Same Page</h3>
+<blockquote>
+<p>The last time I spoke to Bob was September 2nd, to Carry, March 15th…</p>
+</blockquote>
+<p>When <code>P</code> gossips with <code>Q</code>, <code>P</code> first sends a digest to <code>Q</code>:</p>
+<pre><code>for(peer in network) {
+  digest.queue({
+      peer: peer.id
+    , version: peer.largest_version_seen
+  })
+}</code></pre>
+</section>
+<section id="spilling-the-beans" class="level3">
+<h3>Spilling the Beans</h3>
+<blockquote>
+<p>Well since then, Bob first had a baby, and then got divorced!</p>
+</blockquote>
+<p><code>Q</code> responds - With all the updates it has seen for <code>P</code>. - In order of earliest timestamp first.</p>
+</section>
+</section>
+<section id="demo" class="level1">
+<h1>Demo</h1>
+</section>
+<section id="questions" class="level1">
+<h1>Questions?</h1>
+<figure>
+<img src="http://s.mlkshk.com/r/6NJJ.gif" title="wat" />
+</figure>
+</section>
+</body>
+</html>
