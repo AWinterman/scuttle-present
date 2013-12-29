@@ -10,6 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "sizzle": "~1.1.0",
-    "scuttledemo": "~0.1.0"
+    "scuttledemo": "~0.2.0"
   }
 }

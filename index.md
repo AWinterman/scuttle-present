@@ -1,3 +1,7 @@
+% Scuttlebutt
+% Andrew Winterman
+% *Use up and down arrow. Scroll won't work, really*
+
 # Who am I?
 
 - Javascript engineer at UA.

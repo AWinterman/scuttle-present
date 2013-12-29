@@ -5,6 +5,8 @@ window.sizzle = sizzle
 var sections = sizzle('section.level1')
   , current_el = sizzle(window.location.hash)
 
+sections.unshift(sizzle('header')[0])
+
 var current = sections.indexOf(current_el[0])
 
 if(current < 0) {
@@ -31,11 +33,13 @@ function next(ev) {
   if(current < 0) {
     current = 0
   }
+
   if(current > sections.length - 1) {
     current = sections.length - 1
   }
 
   sections[current].scrollIntoView(true)
+    console.log(sections[current])
 
   window.location.hash = sections[current].id
 }
@@ -46,6 +50,6 @@ sizzle('#demo')[0].insertAdjacentHTML('afterbegin', '<svg></svg>')
 
 
 setTimeout( function() {
-  require('../ScuttleDemo/example')(sizzle('svg')[0])
+  require('scuttledemo/example')(sizzle('svg')[0])
 })
 

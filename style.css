@@ -16,6 +16,10 @@ body {
   justify-content: stretch;
 }
 
+body > p {
+  font-size: 0.5em;
+}
+
 header, section.level1 {
   display: flex;
   flex-flow: column;
