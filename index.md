@@ -202,8 +202,8 @@ for(peer in network) {
 
 # Sources #
 
-Vector Clocks: [http://cnlab.kaist.ac.kr/~ikjun/data/Course_work/CS642-Distributed_Systems/papers/lamport1978.pdf]()
+[Vector Clocks: Lamport 1978](http://cnlab.kaist.ac.kr/~ikjun/data/Course_work/CS642-Distributed_Systems/papers/lamport1978.pdf)
 
-Scuttlebutt: [http://www.cs.cornell.edu/home/rvr/papers/flowgossip.pdf]()
+[Scuttlebutt Gossip: Van Renesse et al.](http://www.cs.cornell.edu/home/rvr/papers/flowgossip.pdf)
 
 Conflicts: Everything at [http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions]()
