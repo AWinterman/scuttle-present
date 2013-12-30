@@ -28,15 +28,22 @@
 <li>I like chess and mathematics :)</li>
 </ul>
 </section>
+<section id="scuttlebutt-might-be-good-for" class="level1">
+<h1>Scuttlebutt might be good for:</h1>
+<ul>
+<li>Real time updates across a network?</li>
+<li>Multiplayer games?</li>
+<li>Big Data Problems?</li>
+<li>Interested in distributed systems?</li>
+</ul>
+</section>
 <section id="let-us-talk-about-time" class="level1">
 <h1>Let us talk about time:</h1>
 <ul>
 <li>Orders Events</li>
-<li>Measured with clocks:</li>
+<li>distributed system + establishing precedence = ◔ᴗ◔</li>
+<li>So we need a clock.</li>
 </ul>
-<blockquote>
-<p>If an event happend at 3:15 the time on the clock was <em>after</em> 3:15, but <em>before</em> 3:16.</p>
-</blockquote>
 </section>
 <section id="what-is-a-clock" class="level1">
 <h1>What is a clock?</h1>
@@ -48,30 +55,35 @@
 <li>swings of a pendulum, etc.</li>
 </ul>
 <p>Why? So we have a consistent way to establish precedence:</p>
+<blockquote>
+<p>If an event happend at 3:15 the time on the clock was <em>after</em> 3:15, but <em>before</em> 3:16.</p>
+</blockquote>
 </section>
 <section id="the-clock-condition" class="level1">
 <h1>The Clock Condition:</h1>
-<p><em>For all events <code>a</code>, <code>b</code>, <code>a</code> precedes <code>b</code> if <code>a</code> occurs at time earlier (a.k.a. lesser) than the time of <code>b</code></em></p>
+<p>Given events <code>a</code> and <code>b</code>, <code>a</code> precedes <code>b</code> if <code>a</code> occurs at clock time earlier (a.k.a. lesser) than the clock time at which <code>b</code> occurs.</p>
 </section>
 <section id="how-do-we-establish-precedence-if-cant-both-see-the-same-clock" class="level1">
 <h1>How do we establish precedence if can’t both see the same clock?</h1>
 <ul>
-<li>We have a number of processes which communicated only by message passing</li>
-<li>We don’t how much time elapses between a message leaving the sender and being read by the receiver</li>
-<li>We can store data in each process</li>
-<li>We can’t trust peers to keep consistent time with all the other peers.</li>
+<li>a number of processes which communicated only by message passing.</li>
+<li><em>don’t</em> how long passing a message takes.</li>
+<li><em>can’t</em> trust peers to keep consistent time.</li>
+<li>can store data in each process</li>
 </ul>
 <p>What do we do?</p>
 </section>
 <section id="vector-clocks" class="level1">
 <h1>Vector Clocks</h1>
+<blockquote>
 <p><em>Stay Calm</em></p>
+</blockquote>
 <p>Like a normal clock, measures the number of occurences of some event, but!</p>
 <ul>
 <li>Events occur accross a distributed system.</li>
 <li>Time is unrelated to physical time.</li>
-<li>Each member of the system keeps its own clock</li>
-<li>Each member of the system keeps track of every other member’s time.</li>
+<li>Each member keeps its own clock</li>
+<li>Each member keeps track of every other member’s time.</li>
 </ul>
 </section>
 <section id="example" class="level1">
@@ -86,9 +98,9 @@ Q: [0, 0]</code></pre>
 <section id="events" class="level1">
 <h1>Events?</h1>
 <ul>
-<li>local</li>
-<li>send</li>
-<li>receive</li>
+<li>Local: at node in question</li>
+<li>Send</li>
+<li>Receive</li>
 </ul>
 </section>
 <section id="implementation-rules" class="level1">
@@ -148,8 +160,18 @@ Q: [1, 2]</code></pre>
 <section id="get-on-the-same-page" class="level3">
 <h3>Get on the Same Page</h3>
 <blockquote>
-<p>The last time I spoke to Bob was September 2nd, to Carry, March 15th…</p>
+<p>The last time I spoke to Bob was September 2nd…</p>
 </blockquote>
+</section>
+<section id="spilling-the-beans" class="level3">
+<h3>Spilling the Beans</h3>
+<blockquote>
+<p>Well since then, Bob first had a baby, and then got divorced!</p>
+</blockquote>
+</section>
+</section>
+<section id="getting-on-the-same-page" class="level1">
+<h1>Getting on the same page</h1>
 <p>When <code>P</code> gossips with <code>Q</code>, <code>P</code> first sends a digest to <code>Q</code>:</p>
 <pre><code>for(peer in network) {
   digest.queue({
@@ -158,22 +180,44 @@ Q: [1, 2]</code></pre>
   })
 }</code></pre>
 </section>
-<section id="spilling-the-beans" class="level3">
-<h3>Spilling the Beans</h3>
-<blockquote>
-<p>Well since then, Bob first had a baby, and then got divorced!</p>
-</blockquote>
-<p><code>Q</code> responds - With all the updates it has seen for <code>P</code>. - In order of earliest timestamp first.</p>
-</section>
+<section id="spilling-the-beans-1" class="level1">
+<h1>Spilling the Beans</h1>
+<p><code>Q</code> responds</p>
+<ul>
+<li>With all the updates it has seen for <code>P</code>.</li>
+<li>In order of earliest timestamp first.</li>
+</ul>
 </section>
 <section id="demo" class="level1">
 <h1>Demo</h1>
+</section>
+<section id="when-to-apply-an-update" class="level1">
+<h1>When to apply an update?</h1>
+<blockquote>
+<p>Here be dragons!</p>
+</blockquote>
+<ul>
+<li>To this point discussion has been about which updates to send, and how.</li>
+<li>Havent mentioned decision function for applying update to state.</li>
+<li>Maybe you only care about:
+<ul>
+<li>The largest number any node has reported.</li>
+<li>Most recent updates</li>
+<li>Some union or intersection of updates</li>
+</ul></li>
+</ul>
 </section>
 <section id="questions" class="level1">
 <h1>Questions?</h1>
 <figure>
 <img src="http://s.mlkshk.com/r/6NJJ.gif" title="wat" />
 </figure>
+</section>
+<section id="sources" class="level1">
+<h1>Sources</h1>
+<p>Vector Clocks: <a href="">http://cnlab.kaist.ac.kr/~ikjun/data/Course_work/CS642-Distributed_Systems/papers/lamport1978.pdf</a></p>
+<p>Scuttlebutt: <a href="">http://www.cs.cornell.edu/home/rvr/papers/flowgossip.pdf</a></p>
+<p>Conflicts: Everything at <a href="">http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions</a></p>
 </section>
 </body>
 </html>

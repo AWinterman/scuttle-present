@@ -39,7 +39,6 @@ function next(ev) {
   }
 
   sections[current].scrollIntoView(true)
-    console.log(sections[current])
 
   window.location.hash = sections[current].id
 }
@@ -47,9 +46,6 @@ function next(ev) {
 
 sizzle('#demo')[0].insertAdjacentHTML('afterbegin', '<svg></svg>')
 
-
-
 setTimeout( function() {
   require('scuttledemo/example')(sizzle('svg')[0])
 })
-

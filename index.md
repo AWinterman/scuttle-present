@@ -9,12 +9,18 @@
 - `winterMan` or sometimes `AWinterman` on IRC.
 - I like chess and mathematics :)
 
+# Scuttlebutt might be good for:  #
+
+- Real time updates across a network?
+- Multiplayer games?
+- Big Data Problems?
+- Interested in distributed systems?
+
 # Let us talk about time: #
 
 - Orders Events
-- Measured with clocks:
-
-> If an event happend at 3:15 the time on the clock was *after* 3:15, but *before* 3:16.
+- distributed system + establishing precedence = ◔ᴗ◔
+- So we need a clock.
 
 # What is a clock? #
 
@@ -27,31 +33,33 @@ A device which counts:
 
 Why? So we have a consistent way to establish precedence:
 
+> If an event happend at 3:15 the time on the clock was *after* 3:15, but
+> *before* 3:16.
+
 # The Clock Condition: #
 
-*For all events `a`, `b`, `a` precedes `b` if `a` occurs at time earlier
-(a.k.a. lesser) than the time of `b`*
+Given events `a` and `b`, `a` precedes `b` if `a` occurs at clock time
+earlier (a.k.a. lesser) than the clock time at which `b` occurs.
 
 # How do we establish precedence if can't both see the same clock? #
 
-- We have a number of processes which communicated only by message passing
-- We don't how much time elapses between a message leaving the sender and being
-  read by the receiver
-- We can store data in each process
-- We can't trust peers to keep consistent time with all the other peers.
+- a number of processes which communicated only by message passing.
+- *don't* how long passing a message takes.
+- *can't* trust peers to keep consistent time.
+- can store data in each process
 
 What do we do?
 
 # Vector Clocks #
 
-*Stay Calm*
+> *Stay Calm*
 
 Like a normal clock, measures the number of occurences of some event, but!
 
 - Events occur accross a distributed system. 
 - Time is unrelated to physical time.
-- Each member of the system keeps its own clock 
-- Each member of the system keeps track of every other member's time.
+- Each member keeps its own clock 
+- Each member keeps track of every other member's time.
 
 # Example: #
 A network has two nodes: `P`, `Q`, so before any events have happened:
@@ -70,9 +78,9 @@ Q: [0, 0]
 
 # Events? #
 
-- local
-- send
-- receive
+- Local: at node in question
+- Send 
+- Receive
 
 
 # Implementation Rules #
@@ -150,8 +158,13 @@ A series of entries consisting of:
 
 ### Get on the Same Page ###
 
-> The last time I spoke to Bob was September 2nd, to Carry, March 15th...
+> The last time I spoke to Bob was September 2nd...
 
+### Spilling the Beans ##
+
+> Well since then, Bob first had a baby, and then got divorced!
+
+# Getting on the same page #
 When `P` gossips with `Q`, `P` first sends a digest to `Q`:
 
 ```
@@ -163,16 +176,34 @@ for(peer in network) {
 }
 ```
 
-### Spilling the Beans ##
-
-> Well since then, Bob first had a baby, and then got divorced!
+# Spilling the Beans #
 
 `Q` responds 
+
   - With all the updates it has seen for `P`.
   - In order of earliest timestamp first.
 
 # Demo #
 
+# When to apply an update? #
+
+> Here be dragons!
+
+- Until this point discussion has been about which updates to send, and how.
+- Haven't mentioned decision function for applying update to state.
+- Maybe you only care about:
+    - The largest number any node has reported.
+    - Most recent updates
+    - Some union or intersection of updates
+
 # Questions? #
 
 ![](http://s.mlkshk.com/r/6NJJ.gif "wat")
+
+# Sources #
+
+Vector Clocks: [http://cnlab.kaist.ac.kr/~ikjun/data/Course_work/CS642-Distributed_Systems/papers/lamport1978.pdf]()
+
+Scuttlebutt: [http://www.cs.cornell.edu/home/rvr/papers/flowgossip.pdf]()
+
+Conflicts: Everything at [http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions]()
