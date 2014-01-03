@@ -1,6 +1,15 @@
-% Scuttlebutt
-% Andrew Winterman
-% *Use up and down arrow. Scroll won't work, really*
+# ![Scuttlebutt](https://f.cloud.github.com/assets/37303/1836776/ce8b825c-740e-11e3-8a89-70861d073c03.png) #
+
+> Water for immediate consumption on a sailing ship was conventionally stored in
+> a scuttled butt: a butt (cask) which had been scuttled by making a hole in it
+> so the water could be withdrawn. Since sailors exchanged gossip when they
+> gathered at the scuttlebutt for a drink of water, "scuttlebutt" became Navy slang
+> for gossip or rumours.
+
+<aside>
+(Use the arrow keys to navigate)
+</aside>
+
 
 # Who am I?
 
@@ -11,16 +20,30 @@
 
 # Scuttlebutt might be good for:  #
 
-- Real time updates across a network?
-- Multiplayer games?
-- Big Data Problems?
-- Interested in distributed systems?
+- Real time updates across a network
+- Multiplayer games
+- Big Data Problems
 
-# Let us talk about time: #
+# What is it? #
 
-- Orders Events
-- distributed system + establishing precedence = ◔ᴗ◔
-- So we need a clock.
+A strategy for sharing *complete* knowledge between computers in a distributed system.
+
+This is hard.
+
+# Time #
+
+- Establishes precedence of events.
+
+> If an event happend at 3:15 if the time on the clock was *after* 3:15, but
+> *before* 3:16.
+
+
+- Central to how we think about systems:
+    - purchasing tickets
+    - qualifying for grants
+    - auctions
+
+But how do we tell time if we can't all see the clock?
 
 # What is a clock? #
 
@@ -31,17 +54,15 @@ A device which counts:
 - number of times the sun has been at a certain position
 - swings of a pendulum, etc.
 
-Why? So we have a consistent way to establish precedence:
-
-> If an event happend at 3:15 the time on the clock was *after* 3:15, but
-> *before* 3:16.
+Ideally regular, but for our purposes, we just really care about which event
+happened first
 
 # The Clock Condition: #
 
 Given events `a` and `b`, `a` precedes `b` if `a` occurs at clock time
 earlier (a.k.a. lesser) than the clock time at which `b` occurs.
 
-# How do we establish precedence if can't both see the same clock? #
+# Constraints: #
 
 - a number of processes which communicated only by message passing.
 - *don't* how long passing a message takes.
@@ -76,13 +97,6 @@ P: [1, 0]
 Q: [0, 0]
 ```
 
-# Events? #
-
-- Local: at node in question
-- Send 
-- Receive
-
-
 # Implementation Rules #
 
 **Rule 1:** Any time a peer experiences an event, it increments its own entry
@@ -93,6 +107,12 @@ when they send messages.
 
 **Rule 3:** Upon receipt, peers update the sender's entry in their clock to
 `t`. They update their own entry to be larger than `t`.
+
+# Events? #
+
+- Local: at node in question
+- Send 
+- Receive
 
 # Example: #
 
@@ -123,10 +143,46 @@ Q: [1, 2]
 
 The [clock condition](#the-clock-condition) still holds:
 
-**Caveat:**
+**Caveats:**
 
-This is still only a partial ordering-- if messages are seldom sent, many
+This is still only a partial ordering: if messages are seldom sent, many
 events will appear concurrent
+
+Takes no account of physical time: events occuring outside the network with a
+certain physical ordering may or may not have the same ordering within our
+logical system.
+
+# Caveats #
+> This permits the following type of "anomalous behavior." Consider a nationwide
+> system of interconnected computers. Suppose a person issues a request A on a
+> computer A, and then telephones a friend in another city to have him issue a
+> request B on a different computer B. It is quite possible for request B to
+> receive a lower timestamp and be ordered before request A. This can happen
+> because the system has no way of knowing that A actually preceded B, since that
+> precedence information is based on messages external to the system
+
+# [npm.im/vector-clock-class](https://npmjs.org/package/vector-clock-class) #
+
+```javascript
+> var ClockClass = require('vector-clock-class')
+> var vector_clock = Clock('P')
+> vector_clock.clock 
+{ 'P': 0 }
+>
+> vector_clock.get('P') 
+0
+>
+> vector_clock.get('Q') 
+-Infinity
+>
+> vector_clock.update('Q', 10) 
+10
+>
+> vector_clock.clock 
+{ 'P': 11, 'Q': 10 } 
+> vector_clock.createReadStream().pipe(/* your_stream_here */)
+
+```
 
 # Enter Scuttlebutt
 
@@ -167,23 +223,50 @@ A series of entries consisting of:
 # Getting on the same page #
 When `P` gossips with `Q`, `P` first sends a digest to `Q`:
 
-```
-for(peer in network) {
-  digest.queue({
-      peer: peer.id
-    , version: peer.largest_version_seen
-  })
-}
-```
+- An entry for each peer
+- Holds *largest version number* and ID for peer.
+- For example: `('BOB', 2)`
 
 # Spilling the Beans #
 
 `Q` responds 
 
-  - With all the updates it has seen for `P`.
+  - With all the updates it has seen for `BOB`.
   - In order of earliest timestamp first.
 
-# Demo #
+# [npm.im/simple-scuttle](https://npmjs.org/package/simple-scuttle) #
+
+```javascript
+var scuttle = require('simple-scuttle')
+
+var peer_io = // a stream which sends and receives messages from the peer.
+  , config  = scuttle.base.config
+
+// This part is REALLY important, more on it in a second.
+config.resolve = base.resolution.strictly_order_values
+
+// make a gossip object.
+var gossip = new scuttle.Gossip('id', config)
+
+// It's just a stream, 
+gossip.pipe(peer_io).pipe(gossip)
+
+// Every time history changes, history attribute emits an "update" event.
+gossip.history.on('update', write_to_disk) 
+
+// If we have more history than we can store, a compaction event is emmitted.
+gossip.history.on('compaction', compact)
+
+// Apply local updates with .set:
+gossip.set(key, value)
+
+// every time state changes an event is emitted.
+gossip.on('state', rerender)
+
+function compact(memory, history_instance)  {
+  /* Resolve history to be more compact somehow */
+}
+```
 
 # When to apply an update? #
 
@@ -196,6 +279,8 @@ for(peer in network) {
     - Most recent updates
     - Some union or intersection of updates
 
+# [Demo](https://npmjs.org/package/scuttledemo) #
+
 # Questions? #
 
 ![](http://s.mlkshk.com/r/6NJJ.gif "wat")
@@ -206,4 +291,4 @@ for(peer in network) {
 
 [Scuttlebutt Gossip: Van Renesse et al.](http://www.cs.cornell.edu/home/rvr/papers/flowgossip.pdf)
 
-Conflicts: Everything at [http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions]()
+Conflicts: Everything at [aphyr/jepson](http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions)

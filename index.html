@@ -4,21 +4,46 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="author" content="Andrew Winterman">
-  <title>Scuttlebutt</title>
+  <title></title>
   <style type="text/css">code{white-space: pre;}</style>
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
   <link rel="stylesheet" href="style.css">
   <script type="text/javascript" async src="bundle.js"></script>
 </head>
 <body>
-<header>
-<h1 class="title">Scuttlebutt</h1>
-<h2 class="author">Andrew Winterman</h2>
-<h3 class="date"><em>Use up and down arrow. Scroll won’t work, really</em></h3>
-</header>
+<section id="scuttlebutt" class="level1">
+<h1><img src="https://f.cloud.github.com/assets/37303/1836776/ce8b825c-740e-11e3-8a89-70861d073c03.png" alt="Scuttlebutt" /></h1>
+<blockquote>
+<p>Water for immediate consumption on a sailing ship was conventionally stored in a scuttled butt: a butt (cask) which had been scuttled by making a hole in it so the water could be withdrawn. Since sailors exchanged gossip when they gathered at the scuttlebutt for a drink of water, <q>scuttlebutt</q> became Navy slang for gossip or rumours.</p>
+</blockquote>
+<aside>
+(Use the arrow keys to navigate)
+</aside>
+
+
+</section>
 <section id="who-am-i" class="level1">
 <h1>Who am I?</h1>
 <ul>
@@ -31,19 +56,33 @@
 <section id="scuttlebutt-might-be-good-for" class="level1">
 <h1>Scuttlebutt might be good for:</h1>
 <ul>
-<li>Real time updates across a network?</li>
-<li>Multiplayer games?</li>
-<li>Big Data Problems?</li>
-<li>Interested in distributed systems?</li>
+<li>Real time updates across a network</li>
+<li>Multiplayer games</li>
+<li>Big Data Problems</li>
 </ul>
 </section>
-<section id="let-us-talk-about-time" class="level1">
-<h1>Let us talk about time:</h1>
+<section id="what-is-it" class="level1">
+<h1>What is it?</h1>
+<p>A strategy for sharing <em>complete</em> knowledge between computers in a distributed system.</p>
+<p>This is hard.</p>
+</section>
+<section id="time" class="level1">
+<h1>Time</h1>
 <ul>
-<li>Orders Events</li>
-<li>distributed system + establishing precedence = ◔ᴗ◔</li>
-<li>So we need a clock.</li>
+<li>Establishes precedence of events.</li>
 </ul>
+<blockquote>
+<p>If an event happend at 3:15 if the time on the clock was <em>after</em> 3:15, but <em>before</em> 3:16.</p>
+</blockquote>
+<ul>
+<li>Central to how we think about systems:
+<ul>
+<li>purchasing tickets</li>
+<li>qualifying for grants</li>
+<li>auctions</li>
+</ul></li>
+</ul>
+<p>But how do we tell time if we can’t all see the clock?</p>
 </section>
 <section id="what-is-a-clock" class="level1">
 <h1>What is a clock?</h1>
@@ -54,17 +93,14 @@
 <li>number of times the sun has been at a certain position</li>
 <li>swings of a pendulum, etc.</li>
 </ul>
-<p>Why? So we have a consistent way to establish precedence:</p>
-<blockquote>
-<p>If an event happend at 3:15 the time on the clock was <em>after</em> 3:15, but <em>before</em> 3:16.</p>
-</blockquote>
+<p>Ideally regular, but for our purposes, we just really care about which event happened first</p>
 </section>
 <section id="the-clock-condition" class="level1">
 <h1>The Clock Condition:</h1>
 <p>Given events <code>a</code> and <code>b</code>, <code>a</code> precedes <code>b</code> if <code>a</code> occurs at clock time earlier (a.k.a. lesser) than the clock time at which <code>b</code> occurs.</p>
 </section>
-<section id="how-do-we-establish-precedence-if-cant-both-see-the-same-clock" class="level1">
-<h1>How do we establish precedence if can’t both see the same clock?</h1>
+<section id="constraints" class="level1">
+<h1>Constraints:</h1>
 <ul>
 <li>a number of processes which communicated only by message passing.</li>
 <li><em>don’t</em> how long passing a message takes.</li>
@@ -95,6 +131,12 @@ Q: [0, 0]</code></pre>
 <pre><code>P: [1, 0]
 Q: [0, 0]</code></pre>
 </section>
+<section id="implementation-rules" class="level1">
+<h1>Implementation Rules</h1>
+<p><strong>Rule 1:</strong> Any time a peer experiences an event, it increments its own entry in its clock.</p>
+<p><strong>Rule 2:</strong> Peers must include the value, <code>t</code> of their own entry in their clock when they send messages.</p>
+<p><strong>Rule 3:</strong> Upon receipt, peers update the sender’s entry in their clock to <code>t</code>. They update their own entry to be larger than <code>t</code>.</p>
+</section>
 <section id="events" class="level1">
 <h1>Events?</h1>
 <ul>
@@ -102,12 +144,6 @@ Q: [0, 0]</code></pre>
 <li>Send</li>
 <li>Receive</li>
 </ul>
-</section>
-<section id="implementation-rules" class="level1">
-<h1>Implementation Rules</h1>
-<p><strong>Rule 1:</strong> Any time a peer experiences an event, it increments its own entry in its clock.</p>
-<p><strong>Rule 2:</strong> Peers must include the value, <code>t</code> of their own entry in their clock when they send messages.</p>
-<p><strong>Rule 3:</strong> Upon receipt, peers update the sender’s entry in their clock to <code>t</code>. They update their own entry to be larger than <code>t</code>.</p>
 </section>
 <section id="example-1" class="level1">
 <h1>Example:</h1>
@@ -127,8 +163,35 @@ Q: [1, 2]</code></pre>
 <section id="how-is-this-like-time" class="level1">
 <h1>How is this like time?</h1>
 <p>The <a href="#the-clock-condition">clock condition</a> still holds:</p>
-<p><strong>Caveat:</strong></p>
-<p>This is still only a partial ordering– if messages are seldom sent, many events will appear concurrent</p>
+<p><strong>Caveats:</strong></p>
+<p>This is still only a partial ordering: if messages are seldom sent, many events will appear concurrent</p>
+<p>Takes no account of physical time: events occuring outside the network with a certain physical ordering may or may not have the same ordering within our logical system.</p>
+</section>
+<section id="caveats" class="level1">
+<h1>Caveats</h1>
+<blockquote>
+<p>This permits the following type of <q>anomalous behavior.</q> Consider a nationwide system of interconnected computers. Suppose a person issues a request A on a computer A, and then telephones a friend in another city to have him issue a request B on a different computer B. It is quite possible for request B to receive a lower timestamp and be ordered before request A. This can happen because the system has no way of knowing that A actually preceded B, since that precedence information is based on messages external to the system</p>
+</blockquote>
+</section>
+<section id="npm.imvector-clock-class" class="level1">
+<h1><a href="https://npmjs.org/package/vector-clock-class">npm.im/vector-clock-class</a></h1>
+<pre class="sourceCode javascript"><code class="sourceCode javascript">&gt; <span class="kw">var</span> ClockClass = <span class="fu">require</span>(<span class="st">&#39;vector-clock-class&#39;</span>)
+&gt; <span class="kw">var</span> vector_clock = <span class="fu">Clock</span>(<span class="st">&#39;P&#39;</span>)
+&gt; <span class="ot">vector_clock</span>.<span class="fu">clock</span> 
+{ <span class="st">&#39;P&#39;</span>: <span class="dv">0</span> }
+&gt;
+&gt; <span class="ot">vector_clock</span>.<span class="fu">get</span>(<span class="st">&#39;P&#39;</span>) 
+<span class="dv">0</span>
+&gt;
+&gt; <span class="ot">vector_clock</span>.<span class="fu">get</span>(<span class="st">&#39;Q&#39;</span>) 
+-<span class="kw">Infinity</span>
+&gt;
+&gt; <span class="ot">vector_clock</span>.<span class="fu">update</span>(<span class="st">&#39;Q&#39;</span>, <span class="dv">10</span>) 
+<span class="dv">10</span>
+&gt;
+&gt; <span class="ot">vector_clock</span>.<span class="fu">clock</span> 
+{ <span class="st">&#39;P&#39;</span>: <span class="dv">11</span>, <span class="st">&#39;Q&#39;</span>: <span class="dv">10</span> } 
+&gt; <span class="ot">vector_clock</span>.<span class="fu">createReadStream</span>().<span class="fu">pipe</span>(<span class="co">/* your_stream_here */</span>)</code></pre>
 </section>
 <section id="enter-scuttlebutt" class="level1">
 <h1>Enter Scuttlebutt</h1>
@@ -173,23 +236,51 @@ Q: [1, 2]</code></pre>
 <section id="getting-on-the-same-page" class="level1">
 <h1>Getting on the same page</h1>
 <p>When <code>P</code> gossips with <code>Q</code>, <code>P</code> first sends a digest to <code>Q</code>:</p>
-<pre><code>for(peer in network) {
-  digest.queue({
-      peer: peer.id
-    , version: peer.largest_version_seen
-  })
-}</code></pre>
+<ul>
+<li>An entry for each peer</li>
+<li>Holds <em>largest version number</em> and ID for peer.</li>
+<li>For example: <code>('BOB', 2)</code></li>
+</ul>
 </section>
 <section id="spilling-the-beans-1" class="level1">
 <h1>Spilling the Beans</h1>
 <p><code>Q</code> responds</p>
 <ul>
-<li>With all the updates it has seen for <code>P</code>.</li>
+<li>With all the updates it has seen for <code>BOB</code>.</li>
 <li>In order of earliest timestamp first.</li>
 </ul>
 </section>
-<section id="demo" class="level1">
-<h1>Demo</h1>
+<section id="npm.imsimple-scuttle" class="level1">
+<h1><a href="https://npmjs.org/package/simple-scuttle">npm.im/simple-scuttle</a></h1>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> scuttle = <span class="fu">require</span>(<span class="st">&#39;simple-scuttle&#39;</span>)
+
+<span class="kw">var</span> peer_io = <span class="co">// a stream which sends and receives messages from the peer.</span>
+  , config  = <span class="ot">scuttle</span>.<span class="ot">base</span>.<span class="fu">config</span>
+
+<span class="co">// This part is REALLY important, more on it in a second.</span>
+<span class="ot">config</span>.<span class="fu">resolve</span> = <span class="ot">base</span>.<span class="ot">resolution</span>.<span class="fu">strictly_order_values</span>
+
+<span class="co">// make a gossip object.</span>
+<span class="kw">var</span> gossip = <span class="kw">new</span> <span class="ot">scuttle</span>.<span class="fu">Gossip</span>(<span class="st">&#39;id&#39;</span>, config)
+
+<span class="co">// It&#39;s just a stream, </span>
+<span class="ot">gossip</span>.<span class="fu">pipe</span>(peer_io).<span class="fu">pipe</span>(gossip)
+
+<span class="co">// Every time history changes, history attribute emits an &quot;update&quot; event.</span>
+<span class="ot">gossip</span>.<span class="ot">history</span>.<span class="fu">on</span>(<span class="st">&#39;update&#39;</span>, write_to_disk) 
+
+<span class="co">// If we have more history than we can store, a compaction event is emmitted.</span>
+<span class="ot">gossip</span>.<span class="ot">history</span>.<span class="fu">on</span>(<span class="st">&#39;compaction&#39;</span>, compact)
+
+<span class="co">// Apply local updates with .set:</span>
+<span class="ot">gossip</span>.<span class="fu">set</span>(key, value)
+
+<span class="co">// every time state changes an event is emitted.</span>
+<span class="ot">gossip</span>.<span class="fu">on</span>(<span class="st">&#39;state&#39;</span>, rerender)
+
+<span class="kw">function</span> <span class="fu">compact</span>(memory, history_instance)  {
+  <span class="co">/* Resolve history to be more compact somehow */</span>
+}</code></pre>
 </section>
 <section id="when-to-apply-an-update" class="level1">
 <h1>When to apply an update?</h1>
@@ -197,8 +288,8 @@ Q: [1, 2]</code></pre>
 <p>Here be dragons!</p>
 </blockquote>
 <ul>
-<li>To this point discussion has been about which updates to send, and how.</li>
-<li>Havent mentioned decision function for applying update to state.</li>
+<li>Until this point discussion has been about which updates to send, and how.</li>
+<li>Haven’t mentioned decision function for applying update to state.</li>
 <li>Maybe you only care about:
 <ul>
 <li>The largest number any node has reported.</li>
@@ -206,6 +297,9 @@ Q: [1, 2]</code></pre>
 <li>Some union or intersection of updates</li>
 </ul></li>
 </ul>
+</section>
+<section id="demo" class="level1">
+<h1><a href="https://npmjs.org/package/scuttledemo">Demo</a></h1>
 </section>
 <section id="questions" class="level1">
 <h1>Questions?</h1>
@@ -215,9 +309,9 @@ Q: [1, 2]</code></pre>
 </section>
 <section id="sources" class="level1">
 <h1>Sources</h1>
-<p>Vector Clocks: <a href="">http://cnlab.kaist.ac.kr/~ikjun/data/Course_work/CS642-Distributed_Systems/papers/lamport1978.pdf</a></p>
-<p>Scuttlebutt: <a href="">http://www.cs.cornell.edu/home/rvr/papers/flowgossip.pdf</a></p>
-<p>Conflicts: Everything at <a href="">http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions</a></p>
+<p><a href="http://cnlab.kaist.ac.kr/~ikjun/data/Course_work/CS642-Distributed_Systems/papers/lamport1978.pdf">Vector Clocks: Lamport 1978</a></p>
+<p><a href="http://www.cs.cornell.edu/home/rvr/papers/flowgossip.pdf">Scuttlebutt Gossip: Van Renesse et al.</a></p>
+<p>Conflicts: Everything at <a href="http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions">aphyr/jepson</a></p>
 </section>
 </body>
 </html>

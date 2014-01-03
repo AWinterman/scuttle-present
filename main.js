@@ -5,8 +5,6 @@ window.sizzle = sizzle
 var sections = sizzle('section.level1')
   , current_el = sizzle(window.location.hash)
 
-sections.unshift(sizzle('header')[0])
-
 var current = sections.indexOf(current_el[0])
 
 if(current < 0) {

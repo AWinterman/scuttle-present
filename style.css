@@ -14,22 +14,42 @@ body {
   flex-flow: column;
   align-items: center;
   justify-content: stretch;
-  background: whitesmoke;
 }
 
 body > p {
   font-size: 0.5em;
 }
 
+img {
+  max-width: 100%;
+}
+
+aside {
+  font-size: .8em;
+  text-align: center;
+  width: 100%
+}
+
 header, section.level1 {
   display: flex;
   flex-flow: column;
   min-height: 100%;
-  max-width: 35em;
   overflow: hidden;
   flex: 0 1 1;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
+  max-width: 45em;
+}
+
+header > *, section.level1 > * {
+  flex: 0 1 1;
+}
+
+p {
+  margin-top: 0;
+  padding-left: 0px; 
+  max-width: 25em;
+  align-self: flex-start 
 }
 
 li {
@@ -40,8 +60,8 @@ a {
   color: steelblue;
 }
 
-header > * {
-  flex: 0 1 1;
+h1 {
+  align-self: center;
 }
 
 nav {
@@ -49,12 +69,16 @@ nav {
 }
 
 blockquote {
-  color: gray
+  color: gray;
+}
+
+#demo {
+  width: 50em;
 }
 
 svg {
-  width: 40em;
-  flex: 80% 1 1;
+  width: 100%;
+  overflow: visible;
 }
 
 svg .link {
@@ -86,6 +110,36 @@ svg .node:active {
   fill: white;
   transition: fill 0.1s stroke-width: 0.1s;
   -webkit-cursor: grabbing;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  overflow: visible;
+  border-radius: 3px;
+  font-size: 0.9em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+#npm.imsimple-scuttle pre {
+  overflow: scroll;
+}
+
+
+pre > code {
+  background: transparent;
+  border: 0;
+  padding: 0px 0px;
+  white-space: pre-wrap;
+}
+
+code {
+  font-family: courier, monospace;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  font-size: 0.9em;
+  padding: 0px 0.25em;
 }
 
 #the-clock-condition > p {
