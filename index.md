@@ -65,9 +65,9 @@ earlier (a.k.a. lesser) than the clock time at which `b` occurs.
 # Constraints: #
 
 - a number of processes which communicated only by message passing.
+- can store data in each process
 - *don't* how long passing a message takes.
 - *can't* trust peers to keep consistent time.
-- can store data in each process
 
 What do we do?
 
@@ -110,7 +110,7 @@ when they send messages.
 
 # Events? #
 
-- Local: at node in question
+- Local
 - Send 
 - Receive
 
@@ -123,7 +123,7 @@ P: [1, 0]
 Q: [0, 0]
 ```
 
-> P sends a message to Q.
+> P sends a message to Q, with timestamp `t=1`.
 
 Upon sending:
 

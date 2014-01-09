@@ -21,7 +21,7 @@ body > p {
 }
 
 img {
-  max-width: 90%;
+  max-height: 50%;
 }
 
 aside {
@@ -120,6 +120,7 @@ pre {
   font-size: 0.9em;
   padding-left: 0.5em;
   padding-right: 0.5em;
+  line-height: 1.2em;
 }
 
 #npm.imsimple-scuttle pre {
@@ -138,7 +139,7 @@ code {
   font-family: courier, monospace;
   background-color: #f8f8f8;
   border: 1px solid #ddd;
-  font-size: 0.9em;
+  font-size: 0.8em;
   padding: 0px 0.25em;
 }
 

@@ -5,6 +5,8 @@ window.sizzle = sizzle
 var sections = sizzle('section.level1')
   , current_el = sizzle(window.location.hash)
 
+console.log('started slideshow at: ', current_el)
+
 var current = sections.indexOf(current_el[0])
 
 if(current < 0) {
@@ -41,9 +43,6 @@ function next(ev) {
   window.location.hash = sections[current].id
 }
 
-
 sizzle('#demo')[0].insertAdjacentHTML('afterbegin', '<svg></svg>')
 
-setTimeout( function() {
-  require('scuttledemo/example')(sizzle('svg')[0])
-})
+require('scuttledemo/example')(sizzle('svg')[0])

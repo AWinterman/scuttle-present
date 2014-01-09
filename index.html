@@ -103,9 +103,9 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <h1>Constraints:</h1>
 <ul>
 <li>a number of processes which communicated only by message passing.</li>
+<li>can store data in each process</li>
 <li><em>don’t</em> how long passing a message takes.</li>
 <li><em>can’t</em> trust peers to keep consistent time.</li>
-<li>can store data in each process</li>
 </ul>
 <p>What do we do?</p>
 </section>
@@ -140,7 +140,7 @@ Q: [0, 0]</code></pre>
 <section id="events" class="level1">
 <h1>Events?</h1>
 <ul>
-<li>Local: at node in question</li>
+<li>Local</li>
 <li>Send</li>
 <li>Receive</li>
 </ul>
@@ -151,7 +151,7 @@ Q: [0, 0]</code></pre>
 <pre><code>P: [1, 0]
 Q: [0, 0]</code></pre>
 <blockquote>
-<p>P sends a message to Q.</p>
+<p>P sends a message to Q, with timestamp <code>t=1</code>.</p>
 </blockquote>
 <p>Upon sending:</p>
 <pre><code>P: [2, 0]
