@@ -243,7 +243,7 @@ var peer_io = // a stream which sends and receives messages from the peer.
   , config  = scuttle.base.config
 
 // This part is REALLY important, more on it in a second.
-config.resolve = base.resolution.strictly_order_values
+config.resolve = scuttle.base.resolution.strictly_order_values
 
 // make a gossip object.
 var gossip = new scuttle.Gossip('id', config)
@@ -272,12 +272,13 @@ function compact(memory, history_instance)  {
 
 > Here be dragons!
 
-- Until this point discussion has been about which updates to send, and how.
-- Haven't mentioned decision function for applying update to state.
 - Maybe you only care about:
     - The largest number any node has reported.
     - Most recent updates
     - Some union or intersection of updates
+
+- This decision will determine the persistence of data in your system.
+- See [aphyr/jepson](http://aphyr.com/posts/281-call-me-maybe-carly-rae-jepsen-and-the-perils-of-network-partitions)
 
 # [Demo](https://npmjs.org/package/scuttledemo) #
 
